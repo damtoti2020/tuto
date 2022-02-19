@@ -43,9 +43,9 @@ elif [ "$1" == "--drop" ];then
   
 # choix de --info
 
-elif [ "$1" == "--drop" ];then
+elif [ "$1" == "--info" ];then
   echo ""
-  echo " l'option que vous avez choisi est --drop"
+  echo " l'option que vous avez choisi est --info"
   echo ""
 # choix de --start
 
