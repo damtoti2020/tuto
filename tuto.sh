@@ -23,7 +23,7 @@ if [ "$1" == "--create" ];then
   # autre methode de pour la boocle for
   
   # creation des conteurs 
-  echo "debut de la creation des onteneur"
+  echo "debut de la creation des conteneur"
   for i in $(seq 1 $nbr_machine);do
    docker run -tid --name $USER-alpine$i  alpine:latest
    echo "Fin de la suppression"
