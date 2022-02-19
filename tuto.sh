@@ -6,7 +6,7 @@
 #
 # Auteur : Damtoti
 #
-# Date : 05/02/2022 https://github.com/damtoti2020/tuto-script-bash.git
+# Date : 05/02/2022 https://github.com/damtoti2020/tuto.git
 #
 ##########################################
 
