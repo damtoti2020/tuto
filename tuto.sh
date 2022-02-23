@@ -1,73 +1,99 @@
 #!/bin/bash
 
-##########################################
+############################################################
 #
-# description : déploiement à la volée de conteneur docker
+#  Description : déploiement à la volée de conteneur docker
 #
-# Auteur : Damtoti
+#  Auteur : Damtoti
 #
-# Date : 05/02/2022 https://github.com/damtoti2020/tuto.git
+#  Date : 05/02/2022 https://github.com/damtoti2020/tuto.git
 #
-##########################################
+###########################################################
 
-# choix de --create
+
+
+
+#si option --create
 if [ "$1" == "--create" ];then
-  echo ""
-  echo " l'option que vous avez choisi est --create"
-  echo ""
+	
+	# définition du nombre de conteneur
+  nb_machine=1
+  [ "$2" != "" ] && nb_machine=$2
   
-  # definition du nombres de conteneur
-  nbr_machine=1
-  [ "$2" != "" ] && nbr_machine=$2
-  
-  # autre methode de pour la boocle for
-  
-  # creation des conteurs 
-  echo "debut de la creation des conteneur"
-  for i in $(seq 1 $nbr_machine);do
-   docker run -tid --name $USER-alpine$i  alpine:latest
-   echo "Fin de la suppression"
-  done
-  
-  echo "jai cree" ${nbr_machine}
-  
-  
-# choix de --drop
+	# setting min/max
+	min=1
+	max=0
 
+  # récupération de idmax
+	idmax=`docker ps -a --format '{{ .Names}}' | awk -F "-" -v user="$USER" '$0 ~ user"-alpine" {print $3}' | sort -r |head -1`
+
+	# redéfinition de min et max
+	min=$(($idmax + 1))
+	max=$(($idmax + $nb_machine))
+
+  # lancement des conteneurs
+	for i in $(seq $min $max);do
+		docker run -tid --name $USER-alpine-$i alpine:latest
+		echo "Conteneur $USER-alpine-$i créé"
+	done
+
+
+# si option --drop
 elif [ "$1" == "--drop" ];then
-  echo ""
-  echo " l'option que vous avez choisi est --drop"
-  echo ""
-  docker rm -f $(docker ps -a | grep $USER-alpine | awk '{print $1}')
-  
-  
-# choix de --info
 
-elif [ "$1" == "--info" ];then
-  echo ""
-  echo " l'option que vous avez choisi est --info"
-  echo ""
-# choix de --start
+	echo "Suppression des conteneurs..."
+	docker rm -f $(docker ps -a | grep $USER-alpine | awk '{print $1}')
+	echo "Fin de la suppression"
 
+
+# si option --start
 elif [ "$1" == "--start" ];then
+  
   echo ""
-  echo " l'option que vous avez choisi est --start"
-  echo ""
-# choix de --ansible
+  docker start $(docker ps -a | grep $USER-alpine | awk '{print $1}')
+	echo ""
 
+
+
+# si option --ansible
 elif [ "$1" == "--ansible" ];then
+  
   echo ""
-  echo " l'option que vous avez choisi est --ansible"
-  echo ""
+	echo " notre option est --ansible"
+	echo ""
 
+
+
+# si option --infos
+elif [ "$1" == "--infos" ];then
+  
+  echo ""
+  echo "Informations des conteneurs : "
+  echo ""
+	for conteneur in $(docker ps -a | grep $USER-alpine | awk '{print $1}');do      
+		docker inspect -f '   => {{.Name}} - {{.NetworkSettings.IPAddress }}' $conteneur
+	done
+	echo ""
+
+
+
+# si aucune option affichage de l'aide
 else
+
 echo "
 
-Option: 
-     - --create : lancer des conteneurs
-     - --drop : supprimer des conteneurs
-     - --infos : caracteristiques des conteneurs 
-     - --start : redémarrage des conteneurs
-     - --ansible : deploiement arborescence ansible
+Options :
+		- --create : lancer des conteneurs
+
+		- --drop : supprimer les conteneurs créer par le deploy.sh
+	
+		- --infos : caractéristiques des conteneurs (ip, nom, user...)
+
+		- --start : redémarrage des conteneurs
+
+		- --ansible : déploiement arborescence ansible
+
 "
+
 fi
+
