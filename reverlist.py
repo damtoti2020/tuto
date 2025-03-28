@@ -11,5 +11,5 @@ liste3 = []
 liste3 = liste1.copy()
 print("liste3 =", liste3)
 
-indexvalue =liste2[2.6]
+indexvalue =liste2[2:6]
 print("The index value are" , indexvalue)
